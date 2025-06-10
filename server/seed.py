@@ -3,19 +3,25 @@
 
 from app import app
 from models import db, Pet
+from faker import Faker
+from random import choice as rc
 
 with app.app_context():
-
-    # Create an empty list
-    pets = []
-
-    # Add some Pet instances to the list
-    pets.append(Pet(name = "Fido", species = "Dog"))
-    pets.append(Pet(name = "Whiskers", species = "Cat"))
-    pets.append(Pet(name = "Hermie", species = "Hamster"))
-
-    # Insert each Pet in the list into the database table
+    Pet.query.delete()  # clear table first
+    pets = [
+        Pet(name="Fido", species="Dog"),
+        Pet(name="Whiskers", species="Cat"),
+        Pet(name="Hermie", species="Hamster"),
+        Pet(name="Slither", species="Snake")
+    ]
     db.session.add_all(pets)
 
-    # Commit the transaction
     db.session.commit()
+
+fake = Faker()
+species = ['Dog', 'Cat', 'Chicken', 'Hamster', 'Turtle']
+
+for _ in range(10):
+    name = fake.first_name()
+    type = rc(species)
+    pets.append(Pet(name=name, species=type))
